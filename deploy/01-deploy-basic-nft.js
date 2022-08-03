@@ -24,3 +24,5 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
         await verify(basicNFT.address, args);
     }
 };
+
+module.exports.tags = ["all", "basic-nft"];
