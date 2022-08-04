@@ -39,10 +39,10 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
     const arguments = [
         coordinatorAddress,
         subscriptionId,
-        networkConfig[chainId]["gasLane"],
-        networkConfig[chainId]["callbackGasLimit"],
+        networkConfig[chainId].gasLane,
+        networkConfig[chainId].callbackGasLimit,
         tokenURIs,
-        networkConfig[chainId]["mintFee"],
+        networkConfig[chainId].mintFee,
     ];
 
     const randomNFT = await deploy("RandomNFT", {
