@@ -7,7 +7,7 @@ const { network, deployments, ethers } = require("hardhat");
     : describe("Basic NFT Unit Tests:", function () {
           let basicNFT, deployer;
 
-          beforeEach(async () => {
+          beforeEach(async function () {
               accounts = await ethers.getSigners();
               deployer = accounts[0];
               await deployments.fixture(["basic-nft"]);
