@@ -55,6 +55,7 @@ contract RandomNFT is ERC721URIStorage, Ownable, VRFConsumerBaseV2 {
         i_mintFee = mintFee;
         i_callbackGasLimit = callbackGasLimit;
         s_tokenURIs = tokenURIs;
+        s_tokenCounter = 0;
     }
 
     // Defender
