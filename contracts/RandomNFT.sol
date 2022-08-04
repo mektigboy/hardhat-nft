@@ -29,7 +29,7 @@ contract RandomNFT is ERC721URIStorage, Ownable, VRFConsumerBaseV2 {
     uint32 constant NUM_WORDS = 1;
 
     // VRF Helpers
-    mapping(uint256 => address) public s_requestIdToSender;
+    mapping(uint256 => address) private s_requestIdToSender;
 
     // NFT Variables
     uint256 public s_tokenCounter;
@@ -52,9 +52,9 @@ contract RandomNFT is ERC721URIStorage, Ownable, VRFConsumerBaseV2 {
         i_coordinator = VRFCoordinatorV2Interface(coordinator);
         i_subscriptionId = subscriptionId;
         i_gasLane = gasLane;
+        i_mintFee = mintFee;
         i_callbackGasLimit = callbackGasLimit;
         s_tokenURIs = tokenURIs;
-        i_mintFee = mintFee;
     }
 
     // Defender
