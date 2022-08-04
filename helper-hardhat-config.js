@@ -17,11 +17,13 @@ const networkConfig = {
         mintFee: "10000000000000000", // 0.01 ETH
         name: "localhost",
     },
+    // Arbitrum
+    // Polygon
 };
 
 const developmentChains = ["hardhat", "localhost"];
 const DECIMALS = "18";
-const INITIAL_PRICE = "200000000000000000000";
+const INITIAL_PRICE = "200000000000000000000"; // 2e20
 
 module.exports = {
     networkConfig,
