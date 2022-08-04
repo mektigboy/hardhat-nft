@@ -1,5 +1,5 @@
-const { network } = require("hardhat");
 const { developmentChains } = require("../helper-hardhat-config");
+const { network } = require("hardhat");
 const { verify } = require("../utils/verify");
 
 module.exports = async function ({ deployments, getNamedAccounts }) {
@@ -16,13 +16,10 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
         waitConfirmations: network.config.blockConfirmations || 1,
     });
 
-    if (
-        !developmentChains.includes(network.name) &&
-        process.env.ETHERSCAN_API_KEY
-    ) {
+    if (!chainId == 31337 && process.env.ETHERSCAN_API_KEY) {
         log("Verifying...");
         await verify(basicNFT.address, args);
     }
 };
 
-module.exports.tags = ["all", "basic-nft"];
+module.exports.tags = ["all", "basic-nft", "main"];
