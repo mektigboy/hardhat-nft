@@ -37,6 +37,10 @@ contract RandomNFT is ERC721URIStorage, Ownable, VRFConsumerBaseV2 {
     string[] internal s_tokenURIs;
     uint256 internal immutable i_mintFee;
 
+    // Events
+    event NFTRequested(uint256 indexed requestId, address requester);
+    event NFTMinted(Selection selection, address minter);
+
     constructor(
         address coordinator,
         uint64 subscriptionId,
@@ -66,6 +70,7 @@ contract RandomNFT is ERC721URIStorage, Ownable, VRFConsumerBaseV2 {
             NUM_WORDS
         );
         s_requestIdToSender[requestId] = msg.sender;
+        emit NFTRequested(requestId, msg.sender);
     }
 
     // Defender
@@ -79,6 +84,7 @@ contract RandomNFT is ERC721URIStorage, Ownable, VRFConsumerBaseV2 {
         Selection selection = selectionFromModdedRNG(moddedRNG);
         _safeMint(tokenOwner, newTokenId);
         _setTokenURI(newTokenId, s_tokenURIs[uint256(selection)]);
+        emit NFTMinted(selection, tokenOwner);
     }
 
     // Defender
