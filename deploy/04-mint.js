@@ -25,7 +25,7 @@ module.exports = async function ({ getNamedAccounts }) {
     await new Promise(async function (resolve, reject) {
         setTimeout(
             () => reject("Timeout: event <NFTMinted> did not fire."),
-            30000 // 5 minutes
+            300000 // 5 minutes
         );
         randomNFT.once("NFTMinted", async function () {
             resolve();
