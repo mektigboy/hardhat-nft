@@ -8,9 +8,9 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
 
     log("--------------------------------------------------");
 
-    const args = [];
+    const arguments = [];
     const basicNFT = await deploy("BasicNFT", {
-        args: args,
+        args: arguments,
         from: deployer,
         log: true,
         waitConfirmations: network.config.blockConfirmations || 1,
@@ -18,7 +18,7 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
 
     if (!chainId == 31337 && process.env.ETHERSCAN_API_KEY) {
         log("Verifying...");
-        await verify(basicNFT.address, args);
+        await verify(basicNFT.address, arguments);
     }
 };
 
