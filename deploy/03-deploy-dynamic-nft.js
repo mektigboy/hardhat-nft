@@ -18,14 +18,14 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
         priceFeedAddress = networkConfig[chainId].ethUsdPriceFeed;
     }
 
+    log("--------------------------------------------------");
+
     const lowSVG = await fs.readFileSync("./images/low.svg", {
         encoding: "utf8",
     });
     const highSVG = await fs.readFileSync("./images/high.svg", {
         encoding: "utf8",
     });
-
-    log("--------------------------------------------------");
 
     const arguments = [priceFeedAddress, lowSVG, highSVG];
     const dynamicNFT = await deploy("DynamicNFT", {
