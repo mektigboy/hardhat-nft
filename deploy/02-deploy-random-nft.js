@@ -15,7 +15,7 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
     const FUND_AMOUNT = "1000000000000000000000";
 
     const tokenURIs = [
-        "ipfs://bafkreidiszt2rp5unghfq3xfdagqcl7b6z2yc4ef6bmkbqbrqrcvoahnby", // 1
+        "ipfs://bafkreia35hmeoi2gbeib7louigapnicybxzhnu3ow7mrzjvjhy2lxh5nwq", // 1
         "ipfs://bafkreiaulh6ope6bamhyhlzgwisc3djffjuclt5zxxamsypmqrulb3kkqa", // 2
         "ipfs://bafkreiayes7ej5kzziio3fydpjjtdygtaxckjitka5z6txfgqgkfeticaq", // 3
     ];
