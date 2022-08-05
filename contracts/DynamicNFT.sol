@@ -2,19 +2,18 @@
 pragma solidity ^0.8.15;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "base64-sol/base64.sol";
+import "hardhat/console.sol";
 
-error DynamicNFT__URIQueryForNonExistentToken();
-
-contract DynamicNFT is ERC721 {
-    AggregatorV3Interface internal immutable i_priceFeed;
+contract DynamicNFT is ERC721, Ownable {
     uint256 s_tokenCounter;
-    string i_lowImageURI;
-    string i_highImageURI;
-    string constant BASE64_ENCODED_SVG_PREFIX = "data:image/svg+xml;base64,";
+    string s_lowImageURI;
+    string s_highImageURI;
 
-    mapping(uint256 => int256) public s_tokenIdToHighValue;
+    mapping(uint256 => int256) s_tokenIdToHighValue;
+    AggregatorV3Interface internal immutable i_priceFeed;
 
     event CreatedNFT(uint256 indexed tokenId, int256 highValue);
 
@@ -24,8 +23,8 @@ contract DynamicNFT is ERC721 {
         string memory highSVG
     ) ERC721("Dynamic NFT Collection", "DNC") {
         s_tokenCounter = 0;
-        i_lowImageURI = convertSVGToImageURI(lowSVG);
-        i_highImageURI = convertSVGToImageURI(highSVG);
+        s_lowImageURI = convertSVGToImageURI(lowSVG);
+        s_highImageURI = convertSVGToImageURI(highSVG);
         i_priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
@@ -34,21 +33,20 @@ contract DynamicNFT is ERC721 {
         pure
         returns (string memory)
     {
+        string memory baseURL = "data:image/svg+xml;base64,";
         string memory base64SVGEncoded = Base64.encode(
             bytes(string(abi.encodePacked(anySVG)))
         );
-        return
-            string(
-                abi.encodePacked(BASE64_ENCODED_SVG_PREFIX, base64SVGEncoded)
-            );
+        return string(abi.encodePacked(baseURL, base64SVGEncoded));
     }
 
     // Let the minters choose the value.
     function mintNFT(int256 highValue) public {
         s_tokenIdToHighValue[s_tokenCounter] = highValue;
-        s_tokenCounter = s_tokenCounter + 1;
         _safeMint(msg.sender, s_tokenCounter);
         emit CreatedNFT(s_tokenCounter, highValue);
+        s_tokenCounter = s_tokenCounter + 1;
+        
     }
 
     function _baseURI() internal pure override returns (string memory) {
@@ -61,11 +59,14 @@ contract DynamicNFT is ERC721 {
         override
         returns (string memory)
     {
-        if (!_exists(tokenId)) revert DynamicNFT__URIQueryForNonExistentToken();
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token."
+        );
         (, int256 price, , , ) = i_priceFeed.latestRoundData();
-        string memory imageURI = i_lowImageURI;
+        string memory imageURI = s_lowImageURI;
         if (price >= s_tokenIdToHighValue[tokenId]) {
-            imageURI = i_lowImageURI;
+            imageURI = s_highImageURI;
         }
         return
             string(
@@ -85,5 +86,21 @@ contract DynamicNFT is ERC721 {
                     )
                 )
             );
+    }
+
+    function getLowSVG() public view returns (string memory) {
+        return s_lowImageURI;
+    }
+
+    function getHighSVG() public view returns (string memory) {
+        return s_highImageURI;
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return i_priceFeed;
+    }
+
+    function getTokenCounter() public view returns (uint256) {
+        return s_tokenCounter;
     }
 }
