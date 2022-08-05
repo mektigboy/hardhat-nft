@@ -1,8 +1,12 @@
-const { network, ethers } = require("hardhat");
-const { networkConfig } = require("../helper-hardhat-config");
+const { network } = require("hardhat");
+const {
+    developmentChains,
+    networkConfig,
+} = require("../helper-hardhat-config");
 const { verify } = require("../utils/verify");
 
 const fs = require("fs");
+const { networkInterfaces } = require("os");
 
 module.exports = async function ({ deployments, getNamedAccounts }) {
     const { deploy, log } = deployments;
@@ -12,13 +16,11 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
     let priceFeedAddress;
 
     if (chainId == 31337) {
-        const aggregator = await ethers.getContract("MockV3Aggregator");
+        const aggregator = await deployments.get("MockV3Aggregator");
         priceFeedAddress = aggregator.address;
     } else {
         priceFeedAddress = networkConfig[chainId].ethUsdPriceFeed;
     }
-
-    log("--------------------------------------------------");
 
     const lowSVG = await fs.readFileSync("./images/low.svg", {
         encoding: "utf8",
@@ -26,6 +28,8 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
     const highSVG = await fs.readFileSync("./images/high.svg", {
         encoding: "utf8",
     });
+
+    log("--------------------------------------------------");
 
     const arguments = [priceFeedAddress, lowSVG, highSVG];
     const dynamicNFT = await deploy("DynamicNFT", {
@@ -35,7 +39,10 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
         waitConfirmations: network.config.blockConfirmations || 1,
     });
 
-    if (!chainId == 31337 && process.env.ETHERSCAN_API_KEY) {
+    if (
+        !developmentChains.includes(network.name) &&
+        process.env.ETHERSCAN_API_KEY
+    ) {
         log("Verifying...");
         await verify(dynamicNFT.address, arguments);
     }
