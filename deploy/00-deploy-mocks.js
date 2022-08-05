@@ -1,8 +1,10 @@
-const { DECIMALS, INITIAL_PRICE } = require("../helper-hardhat-config");
+const {
+    BASE_FEE,
+    DECIMALS,
+    GAS_PRICE_LINK,
+    INITIAL_PRICE,
+} = require("../helper-hardhat-config");
 const { network } = require("hardhat");
-
-const BASE_FEE = "250000000000000000"; // 0.25 LINK
-const GAS_PRICE_LINK = 1e9; // 0.000000001 LINK per gas
 
 module.exports = async ({ deployments, getNamedAccounts }) => {
     const { deploy, log } = deployments;
@@ -14,6 +16,12 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
 
         await deploy("VRFCoordinatorV2Mock", {
             args: [BASE_FEE, GAS_PRICE_LINK],
+            from: deployer,
+            log: true,
+        });
+
+        await deploy("MockV3Aggregator", {
+            args: [DECIMALS, INITIAL_PRICE],
             from: deployer,
             log: true,
         });
