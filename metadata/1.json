@@ -1,0 +1,11 @@
+{
+    "name": "1",
+    "description": "One",
+    "image": "ipfs://bafkreicyb77l3o5si3opn57kqapphauqf5zkh7ea3wortfuj3xqtewimgq",
+    "attributes": [
+        {
+            "trait": "Epic",
+            "value": 1000
+        }
+    ]
+}
